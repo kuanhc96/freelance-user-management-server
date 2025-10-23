@@ -70,7 +70,7 @@ public class UserController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(request));
 	}
 
-	@DeleteMapping("/user/delete/{userGUID}")
+	@DeleteMapping("/delete/{userGUID}")
 //	@PreAuthorize("INTEGRATION_TEST")
 	public ResponseEntity<Void> deleteUser(@PathVariable String userGUID) {
 		if (io.micrometer.common.util.StringUtils.isBlank(userGUID)) {
@@ -78,5 +78,10 @@ public class UserController {
 		}
 		userService.deleteUser(userGUID);
 		return ResponseEntity.noContent().build();
+	}
+
+	@PostMapping("/authenticate")
+	public ResponseEntity<Boolean> authenticate(@RequestParam String email, @RequestParam UserRole role, @RequestParam String password) {
+		return ResponseEntity.ok(userService.authenticate(email, role, password));
 	}
 }

@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +25,13 @@ import com.example.freelance_user_management_server.translator.UserTranslator;
 public class UserService {
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
+
+	public boolean authenticate(String email, UserRole role, String password) {
+		Optional<UserEntity> optionalUserEntity = userRepository.getUserByEmailAndRole(email, role);
+		UserEntity userEntity = optionalUserEntity
+				.orElseThrow(() -> new BadCredentialsException("User Not Found for email: " + email));
+		return passwordEncoder.matches(password, userEntity.getPassword());
+	}
 
 	public GetUserResponse getUserByUserGUID(String userGUID) throws ResourceNotFoundException {
 		Optional<UserEntity> optionalUserEntity = userRepository.getUserByUserGUID(userGUID);
