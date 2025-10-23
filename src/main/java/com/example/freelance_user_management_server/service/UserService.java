@@ -18,6 +18,7 @@ import com.example.freelance_user_management_server.enums.UserRole;
 import com.example.freelance_user_management_server.enums.UserStatus;
 import com.example.freelance_user_management_server.exception.ResourceNotFoundException;
 import com.example.freelance_user_management_server.repository.UserRepository;
+import com.example.freelance_user_management_server.translator.UserTranslator;
 
 @Service
 @RequiredArgsConstructor

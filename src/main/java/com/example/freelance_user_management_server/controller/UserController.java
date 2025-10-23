@@ -3,10 +3,13 @@ package com.example.freelance_user_management_server.controller;
 import java.util.Optional;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,6 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.ws.rs.QueryParam;
 import lombok.RequiredArgsConstructor;
 
+import com.example.freelance_user_management_server.dto.CreateUserRequest;
+import com.example.freelance_user_management_server.dto.CreateUserResponse;
 import com.example.freelance_user_management_server.dto.GetUserResponse;
 import com.example.freelance_user_management_server.entity.UserEntity;
 import com.example.freelance_user_management_server.enums.UserRole;
@@ -50,4 +55,28 @@ public class UserController {
 		return ResponseEntity.ok(userService.getUserByEmailAndRole(email, role));
 	}
 
+	@PostMapping("/user/create")
+	public ResponseEntity<CreateUserResponse> createUser(@RequestBody CreateUserRequest request) {
+		if (!request.getEmail().contains("@")) {
+			throw new IllegalArgumentException("Invalid email format");
+		}
+		if (io.micrometer.common.util.StringUtils.isBlank(request.getPassword())) {
+			throw new IllegalArgumentException("Password cannot be empty");
+		}
+		if (io.micrometer.common.util.StringUtils.isBlank(request.getName())) {
+			throw new IllegalArgumentException("Name cannot be empty");
+		}
+
+		return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(request));
+	}
+
+	@DeleteMapping("/user/delete/{userGUID}")
+//	@PreAuthorize("INTEGRATION_TEST")
+	public ResponseEntity<Void> deleteUser(@PathVariable String userGUID) {
+		if (io.micrometer.common.util.StringUtils.isBlank(userGUID)) {
+			throw new IllegalArgumentException("User GUID cannot be null or empty");
+		}
+		userService.deleteUser(userGUID);
+		return ResponseEntity.noContent().build();
+	}
 }
