@@ -44,7 +44,7 @@ public class UserController {
 	}
 
 	@GetMapping
-//	@PreAuthorize(INSTRUCTOR_OR_STUDENT)
+	@PreAuthorize("hasAuthority('USER_MANAGEMENT_SERVER')")
 	public ResponseEntity<GetUserResponse> getUserByUserEmailAndRole(
 			@RequestParam String email, @RequestParam UserRole role
 	) throws ResourceNotFoundException {
