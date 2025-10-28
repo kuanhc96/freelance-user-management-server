@@ -35,7 +35,7 @@ public class UserController {
 	private final UserService userService;
 
 	@GetMapping("/{userGUID}")
-//	@PreAuthorize(INSTRUCTOR_OR_STUDENT)
+	@PreAuthorize("hasAuthority('USER_MANAGEMENT_SERVER')")
 	public ResponseEntity<GetUserResponse> getUserByUserGUID(@PathVariable String userGUID) throws ResourceNotFoundException {
 		if (StringUtils.isBlank(userGUID)) {
 			throw new IllegalArgumentException("userGUID must not be blank");
@@ -56,6 +56,7 @@ public class UserController {
 	}
 
 	@PostMapping("/user/create")
+	@PreAuthorize("hasAuthority('USER_MANAGEMENT_SERVER')")
 	public ResponseEntity<CreateUserResponse> createUser(@RequestBody CreateUserRequest request) {
 		if (!request.getEmail().contains("@")) {
 			throw new IllegalArgumentException("Invalid email format");
@@ -71,7 +72,7 @@ public class UserController {
 	}
 
 	@DeleteMapping("/delete/{userGUID}")
-//	@PreAuthorize("INTEGRATION_TEST")
+	@PreAuthorize("hasAuthority('USER_MANAGEMENT_SERVER')")
 	public ResponseEntity<Void> deleteUser(@PathVariable String userGUID) {
 		if (io.micrometer.common.util.StringUtils.isBlank(userGUID)) {
 			throw new IllegalArgumentException("User GUID cannot be null or empty");
@@ -81,6 +82,7 @@ public class UserController {
 	}
 
 	@PostMapping("/authenticate")
+	@PreAuthorize("hasAuthority('USER_MANAGEMENT_SERVER')")
 	public ResponseEntity<Boolean> authenticate(@RequestParam String email, @RequestParam UserRole role, @RequestParam String password) {
 		return ResponseEntity.ok(userService.authenticate(email, role, password));
 	}

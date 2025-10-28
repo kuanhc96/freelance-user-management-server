@@ -1,6 +1,7 @@
 package com.example.freelance_user_management_server.configuration;
 
 import java.util.Collections;
+import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,7 +33,7 @@ public class ProjectSecurityConfig {
 				.cors(corsConfig -> corsConfig.disable())
 				.csrf(csrfConfig -> csrfConfig.disable())
 				.authorizeHttpRequests((requests) -> requests
-						.anyRequest().permitAll()
+						.anyRequest().authenticated()
 				);
 		http.oauth2ResourceServer(
 				rsc ->
