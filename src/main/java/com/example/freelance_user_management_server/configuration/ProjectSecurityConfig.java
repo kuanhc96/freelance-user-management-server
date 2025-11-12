@@ -33,7 +33,7 @@ public class ProjectSecurityConfig {
 				.cors(corsConfig -> corsConfig.disable())
 				.csrf(csrfConfig -> csrfConfig.disable())
 				.authorizeHttpRequests((requests) -> requests
-						.anyRequest().authenticated()
+						.anyRequest().permitAll()
 				);
 		http.oauth2ResourceServer(
 				rsc ->
