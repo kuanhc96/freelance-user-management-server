@@ -26,11 +26,16 @@ public class UserService {
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
 
-	public boolean authenticate(String email, UserRole role, String password) {
+	public String authenticate(String email, UserRole role, String password) {
 		Optional<UserEntity> optionalUserEntity = userRepository.getUserByEmailAndRole(email, role);
 		UserEntity userEntity = optionalUserEntity
 				.orElseThrow(() -> new BadCredentialsException("User Not Found for email: " + email));
-		return passwordEncoder.matches(password, userEntity.getPassword());
+		boolean isMatched = passwordEncoder.matches(password, userEntity.getPassword());
+		if (isMatched) {
+			return userEntity.getUserGUID();
+		} else {
+			return null;
+		}
 	}
 
 	public GetUserResponse getUserByUserGUID(String userGUID) throws ResourceNotFoundException {

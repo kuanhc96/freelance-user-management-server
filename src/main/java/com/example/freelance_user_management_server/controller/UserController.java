@@ -83,7 +83,7 @@ public class UserController {
 
 	@PostMapping("/authenticate")
 	@PreAuthorize("hasAuthority('USER_MANAGEMENT_SERVER')")
-	public ResponseEntity<Boolean> authenticate(@RequestParam String email, @RequestParam UserRole role, @RequestParam String password) {
+	public ResponseEntity<String> authenticate(@RequestParam String email, @RequestParam UserRole role, @RequestParam String password) {
 		return ResponseEntity.ok(userService.authenticate(email, role, password));
 	}
 }
