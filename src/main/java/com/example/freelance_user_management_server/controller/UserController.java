@@ -1,7 +1,5 @@
 package com.example.freelance_user_management_server.controller;
 
-import java.util.Optional;
-
 import org.apache.commons.lang.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,20 +13,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import jakarta.ws.rs.QueryParam;
 import lombok.RequiredArgsConstructor;
 
 import com.example.freelance_user_management_server.dto.CreateUserRequest;
 import com.example.freelance_user_management_server.dto.CreateUserResponse;
 import com.example.freelance_user_management_server.dto.GetUserResponse;
-import com.example.freelance_user_management_server.entity.UserEntity;
 import com.example.freelance_user_management_server.enums.UserRole;
 import com.example.freelance_user_management_server.exception.ResourceNotFoundException;
-import com.example.freelance_user_management_server.repository.UserRepository;
 import com.example.freelance_user_management_server.service.UserService;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/api/users")
 @RequiredArgsConstructor
 public class UserController {
 
@@ -55,7 +50,7 @@ public class UserController {
 		return ResponseEntity.ok(userService.getUserByEmailAndRole(email, role));
 	}
 
-	@PostMapping("/user/create")
+	@PostMapping
 	@PreAuthorize("hasAuthority('USER_MANAGEMENT_SERVER')")
 	public ResponseEntity<CreateUserResponse> createUser(@RequestBody CreateUserRequest request) {
 		if (!request.getEmail().contains("@")) {
@@ -71,7 +66,7 @@ public class UserController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(request));
 	}
 
-	@DeleteMapping("/delete/{userGUID}")
+	@DeleteMapping("/{userGUID}")
 	@PreAuthorize("hasAuthority('USER_MANAGEMENT_SERVER')")
 	public ResponseEntity<Void> deleteUser(@PathVariable String userGUID) {
 		if (io.micrometer.common.util.StringUtils.isBlank(userGUID)) {
